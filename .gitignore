@@ -43,3 +43,28 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+# VS Code
+.vscode/
+
+# Build outputs (extra safety)
+build/
+
+# Dart/Flutter
+.dart_tool/
+.packages
+
+# System junk
+*.lock
+*.log
+
+# Linux
+*.swp
+*~
+
+# Mac (already partly there but safe)
+.DS_Store
+
+# Windows
+Thumbs.db
