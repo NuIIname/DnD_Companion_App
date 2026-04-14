@@ -9,7 +9,7 @@ void main() async {
     databaseFactory = databaseFactoryFfi;
   }
 
-  await DatabaseHelper.instance.database;
+  await DatabaseHelper.instance.database; // This line links the db to the UI
   runApp(const MyApp());
 }
 
