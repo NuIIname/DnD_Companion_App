@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
+import 'database_helper.dart';
 
-void main() {
+void main() async {
   if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
+
+  await DatabaseHelper.instance.database;
   runApp(const MyApp());
 }
 
