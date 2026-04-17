@@ -10,6 +10,7 @@
 // none
 
 import 'package:dnd_companion_app/character_tables.dart';
+import 'package:dnd_companion_app/creature_tables.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -50,4 +51,5 @@ Future<Database> _initDB(String fileName) async {
 // Version needs to be updated as the app runs, this ensures that the entire system is on the same page
 Future<void> _onCreate(Database db, int version) async {
   await createCharacterTables(db, version);
+  await createCreatureTables(db, version);
 }
