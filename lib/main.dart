@@ -4,6 +4,8 @@ import 'dart:io';
 import 'database_helper.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // This line must go first in-order for flutter and the .sql files to work together
+
   if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;

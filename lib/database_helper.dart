@@ -4,13 +4,17 @@
 // If you're curious to learn more about this, go to www.pub.dev/packages/sqflite, there you will find the offical documentation
 
 // To-do:
-// Continue adding the rest of the tables to the database
+// - Convert .dart files to .sql
+// - Organize .sql files
+// - Add querying functions
+// - Add aggergate functions
 //
 // Current bugs:
 // none
 
-import 'package:dnd_companion_app/character_tables.dart';
-import 'package:dnd_companion_app/creature_tables.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -49,7 +53,28 @@ Future<Database> _initDB(String fileName) async {
 // This is where all the tables for the database live, this function only runs ONCE.
 // To add new tables during the app running, we need a function that creates it and updates the version.
 // Version needs to be updated as the app runs, this ensures that the entire system is on the same page
+
 Future<void> _onCreate(Database db, int version) async {
-  await createCharacterTables(db, version);
-  await createCreatureTables(db, version);
+  final characterTables = await rootBundle.loadString(
+    'sql_files/character_tables.sql',
+  );
+
+  debugPrint("Character tables loaded");
+
+  final creatureTables = await rootBundle.loadString(
+    'sql_files/creature_tables.sql',
+  );
+
+  debugPrint("Creature tables loaded");
+
+  await _executeSQLFile(db, characterTables);
+  await _executeSQLFile(db, creatureTables);
+}
+
+Future<void> _executeSQLFile(Database db, String sql) async {
+  final tuples = sql.split(';').map((s) => s.trim()).where((s) => s.isNotEmpty);
+
+  for (final tuple in tuples) {
+    await db.execute(tuple);
+  }
 }

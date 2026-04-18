@@ -1,9 +1,6 @@
-import 'package:sqflite/sqflite.dart';
-import 'package:flutter/foundation.dart';
 
-Future<void> createCreatureTables(Database db, int version) async {
-  // Creature table
-  await db.execute('''CREATE TABLE creature(
+-- Creature table
+CREATE TABLE creature(
   creature_id INTEGER PRIMARY KEY,
   creature_name TEXT NOT NULL,
   creature_armor_class TEXT CHECK(creature_armor_class >= 0),
@@ -20,10 +17,10 @@ Future<void> createCreatureTables(Database db, int version) async {
   creature_static_hp INTEGER,
   creature_size INTEGER NOT NULL,
   alignment TEXT
-  )''');
+);
 
-  // Creature movement table
-  await db.execute('''CREATE TABLE creature_movement(
+-- Creature movement table
+CREATE TABLE creature_movement(
   creatureID INTEGER,
   creature_moveID INTEGER,
   walking INTEGER,
@@ -33,82 +30,82 @@ Future<void> createCreatureTables(Database db, int version) async {
   fly INTEGER,
   PRIMARY KEY(creatureID, creature_moveID),
   FOREIGN KEY (creatureID) REFERENCES creature(creature_id)
-  )''');
+);
 
-  // Creature type table
-  await db.execute('''CREATE TABLE creature_type(
+-- Creature type table
+CREATE TABLE creature_type(
   creatureID INTEGER PRIMARY KEY,
   FOREIGN KEY (creatureID) REFERENCES creature(creature_id)
-  )''');
+);
 
-  // Creature feature table
-  await db.execute('''CREATE TABLE creature_feature(
+-- Creature feature table
+CREATE TABLE creature_feature(
   creatureID INTEGER,
   creature_feature_id INTEGER,
   creature_feature_name TEXT,
   creature_feature_description TEXT,
   PRIMARY KEY (creatureID, creature_feature_id),
   FOREIGN KEY (creatureID) REFERENCES creature(creature_id)
-  )''');
+);
 
-  // Has creature feature table
-  await db.execute('''CREATE TABLE has_creature_feature(
+-- Has creature feature table
+CREATE TABLE has_creature_feature(
   creatureID INTEGER,
   creature_feature_id INTEGER,
   PRIMARY KEY (creatureID, creature_feature_id),
   FOREIGN KEY (creatureID) REFERENCES creature(creature_id)
-  )''');
+);
 
-  // Creature feature uses table
-  await db.execute('''CREATE TABLE creature_feature_uses(
+-- reature feature uses table
+CREATE TABLE creature_feature_uses(
   creature_feature_id INTEGER,
   use_type TEXT,
   PRIMARY KEY (creature_feature_id, use_type),
   FOREIGN KEY (creature_feature_id) REFERENCES creature_feature(creature_feature_id)
-  )''');
+);
 
-  // Creature weapon proficiencies table
-  await db.execute('''CREATE TABLE creature_weapon_proficiencies(
+-- Creature weapon proficiencies table
+CREATE TABLE creature_weapon_proficiencies(
   creature_ID INTEGER,
   creature_weapon_prof TEXT,
   PRIMARY KEY (creature_ID, creature_weapon_prof),
   FOREIGN KEY (creature_ID) REFERENCES creature(creature_ID)
-  )''');
+);
 
-  // Creature lang proficiencies table
-  await db.execute('''CREATE TABLE creature_lang_proficiencies(
+-- Creature lang proficiencies table
+CREATE TABLE creature_lang_proficiencies(
   creature_ID INTEGER,
   creature_lang_prof TEXT,
   PRIMARY KEY (creature_ID, creature_lang_prof),
   FOREIGN KEY (creature_ID) REFERENCES creature(creature_ID)
-  )''');
+);
 
-  // Creature skill proficiencies table
-  await db.execute('''CREATE TABLE creature_skill_proficiencies(
+-- Creature skill proficiencies table
+CREATE TABLE creature_skill_proficiencies(
   creature_ID INTEGER,
   creature_skill_prof TEXT,
   PRIMARY KEY (creature_ID, creature_skill_prof),
   FOREIGN KEY (creature_ID) REFERENCES creature(creature_ID)
-  )''');
+);
 
-  // Creature tool proficiencies table
-  await db.execute('''CREATE TABLE creature_tool_proficiencies(
+-- Creature tool proficiencies table
+CREATE TABLE creature_tool_proficiencies(
   creature_ID INTEGER,
   creature_tool_prof TEXT,
   expertise BOOL,
   PRIMARY KEY (creature_ID, creature_tool_prof),
   FOREIGN KEY (creature_ID) REFERENCES creature(creature_ID)
-  )''');
+);
 
-  // Creature saving throw proficiencies table
-  await db.execute('''CREATE TABLE creature_saving_throw_proficiencies(
+-- Creature saving throw proficiencies table
+CREATE TABLE creature_saving_throw_proficiencies(
   creature_ID INTEGER PRIMARY KEY,
   abs TEXT NOT NULL,
   FOREIGN KEY (creature_ID) REFERENCES creature(creature_ID)
-  )''');
+);
 
-  // Creature spells table
-  await db.execute('''CREATE TABLE creature_spells(
+-- Creature spells table
+CREATE TABLE creature_spells(
   creature_spell_id INTEGER PRIMARY KEY,
   ritual TEXT,
   spell_name TEXT NOT NULL,
@@ -121,28 +118,28 @@ Future<void> createCreatureTables(Database db, int version) async {
   concentration TEXT,
   duration TEXT,
   innate_bool BOOL
-  )''');
+);
 
-  // Creature has spells table
-  await db.execute('''CREATE TABLE creature_has_spells(
+-- Creature has spells table
+CREATE TABLE creature_has_spells(
   creature_spell_ID INTEGER,
   creatureID INTEGER,
   PRIMARY KEY(creature_spell_ID, creatureID),
   FOREIGN KEY (creature_spell_ID) REFERENCES creature_spells(creature_spell_id),
   FOREIGN KEY (creatureID) REFERENCES creature(creature_id)
-  )''');
+);
 
-  // Has action table
-  await db.execute('''CREATE TABLE has_action(
+-- Has action table
+CREATE TABLE has_action(
   creature_ID INTEGER,
   creature_action_id INTEGER,
   PRIMARY KEY(creature_ID, creature_action_id),
   FOREIGN KEY (creature_action_id) REFERENCES creature_action(creature_action_id),
   FOREIGN KEY (creature_ID) REFERENCES creature(creature_id)
-  )''');
+);
 
-  // Creature action table
-  await db.execute('''CREATE TABLE creature_action(
+-- Creature action table
+CREATE TABLE creature_action(
   creature_ID INTEGER,
   creature_action_id INTEGER,
   creature_action_description TEXT,
@@ -150,7 +147,6 @@ Future<void> createCreatureTables(Database db, int version) async {
   creature_action_type TEXT NOT NULL,
   PRIMARY KEY(creature_ID, creature_action_id),
   FOREIGN KEY (creature_ID) REFERENCES creature(creature_id)
-  )''');
+);
 
-  debugPrint("CREATURE TABLES LOADED");
-}
+
