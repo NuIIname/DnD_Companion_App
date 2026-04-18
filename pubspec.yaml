@@ -55,7 +55,9 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - sql_files/
+    - sql_files/character_module/
+    - sql_files/character_module/class_files/
+    - sql_files/creature_module/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

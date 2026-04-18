@@ -13,7 +13,6 @@
 // none
 
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -38,7 +37,7 @@ class DatabaseHelper {
   }
 }
 
-// Joins the file and flutter path, this is what links the together
+// Joins the file and flutter path, this is what links them together
 Future<Database> _initDB(String fileName) async {
   final dataBasePath = await getDatabasesPath();
   final path = join(dataBasePath, fileName);
@@ -51,24 +50,91 @@ Future<Database> _initDB(String fileName) async {
 }
 
 // This is where all the tables for the database live, this function only runs ONCE.
-// To add new tables during the app running, we need a function that creates it and updates the version.
-// Version needs to be updated as the app runs, this ensures that the entire system is on the same page
+// To add new tables while the app is running, we need a function that creates it and updates the version.
+// Version needs to be updated as the app runs, this ensures that the entire system stays on the same page
+
+// variable naming convention: (module)(category)
+// For example: characterRace - Race belongs to the character module
 
 Future<void> _onCreate(Database db, int version) async {
-  final characterTables = await rootBundle.loadString(
-    'sql_files/character_tables.sql',
+  //============================================================
+  // Character tables
+  final characterInformation = await rootBundle.loadString(
+    'sql_files/character_module/character_information.sql',
   );
 
-  debugPrint("Character tables loaded");
-
-  final creatureTables = await rootBundle.loadString(
-    'sql_files/creature_tables.sql',
+  final characterGameSystems = await rootBundle.loadString(
+    'sql_files/character_module/systems.sql',
   );
 
-  debugPrint("Creature tables loaded");
+  final characterRace = await rootBundle.loadString(
+    'sql_files/character_module/race.sql',
+  );
 
-  await _executeSQLFile(db, characterTables);
-  await _executeSQLFile(db, creatureTables);
+  final characterClass = await rootBundle.loadString(
+    'sql_files/character_module/class_files/class.sql',
+  );
+
+  final characterSubclass = await rootBundle.loadString(
+    'sql_files/character_module/class_files/subclass.sql',
+  );
+
+  final characterSpells = await rootBundle.loadString(
+    'sql_files/character_module/spells.sql',
+  );
+
+  final characterItems = await rootBundle.loadString(
+    'sql_files/character_module/items.sql',
+  );
+
+  //============================================================
+  // Creature tables
+  final creatureInformation = await rootBundle.loadString(
+    'sql_files/creature_module/creature_information.sql',
+  );
+
+  final creatureFeatures = await rootBundle.loadString(
+    'sql_files/creature_module/creature_features.sql',
+  );
+
+  final creatureProf = await rootBundle.loadString(
+    'sql_files/creature_module/creature_prof.sql',
+  );
+
+  final creatureSpells = await rootBundle.loadString(
+    'sql_files/creature_module/creature_spells.sql',
+  );
+
+  final creatureActions = await rootBundle.loadString(
+    'sql_files/creature_module/creature_actions.sql',
+  );
+
+  //============================================================
+  // The previous variables grab the tables through their file paths, these functions are what actually load them into flutter
+
+  await _executeSQLFile(db, characterInformation);
+
+  await _executeSQLFile(db, characterGameSystems);
+
+  await _executeSQLFile(db, characterRace);
+
+  await _executeSQLFile(db, characterClass);
+
+  await _executeSQLFile(db, characterSubclass);
+
+  await _executeSQLFile(db, characterSpells);
+
+  await _executeSQLFile(db, characterItems);
+
+  await _executeSQLFile(db, creatureInformation);
+
+  await _executeSQLFile(db, creatureFeatures);
+
+  await _executeSQLFile(db, creatureProf);
+
+  await _executeSQLFile(db, creatureSpells);
+
+  await _executeSQLFile(db, creatureActions);
 }
 
 Future<void> _executeSQLFile(Database db, String sql) async {
