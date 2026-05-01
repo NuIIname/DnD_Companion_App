@@ -12,13 +12,18 @@
 -- Character table
 CREATE TABLE characters(
   character_id INTEGER PRIMARY KEY,
-  rID INTEGER,
+  character_name TEXT,
+  race_id INTEGER,
+  background_id INTEGER,
+  inspiration_id INTEGER,
   conditions TEXT,
   xp INTEGER CHECK(xp >= 0),
   resurrection_dc INTEGER CHECK(resurrection_dc >= 10),
   alignment TEXT,
   death_saves INTEGER CHECK(death_saves >= 0 AND death_saves <= 3),
-  FOREIGN KEY (rID) REFERENCES race(race_id) 
+  FOREIGN KEY (race_id) REFERENCES race(race_id)  ON DELETE CASCADE,
+  FOREIGN KEY (background_id) REFERENCES background(background_id) ON DELETE CASCADE,
+  FOREIGN KEY (inspiration_id) REFERENCES inpiration(inspiration_id)  ON DELETE CASCADE
   );
 
 
@@ -130,4 +135,5 @@ CREATE TABLE sub_inventory(
   PRIMARY KEY (subinventory_id, item_id),
   FOREIGN KEY (item_id) REFERENCES item(item_id)
 );
+
 

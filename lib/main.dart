@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
-import 'database_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // This line must go first in-order for flutter and the .sql files to work together
@@ -11,7 +10,6 @@ void main() async {
     databaseFactory = databaseFactoryFfi;
   }
 
-  await DatabaseHelper.instance.database; // This line links the db to the UI
   runApp(const MyApp());
 }
 

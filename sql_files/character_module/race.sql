@@ -17,7 +17,7 @@ CREATE TABLE race(
   str INTEGER CHECK(str >= 1 AND str <= 30),
   dex INTEGER CHECK(dex >= 1 AND dex <= 30),
   con INTEGER CHECK(con >= 1 AND con <= 30),
-  int INTEGER CHECK(int >= 1 AND int <= 30),
+  inte INTEGER CHECK(inte >= 1 AND inte <= 30),
   wis INTEGER CHECK(wis >= 1 AND wis <= 30),
   cha INTEGER CHECK(cha >= 1 AND cha <= 30),
   natural_armor INTEGER CHECK(natural_armor >= 0),

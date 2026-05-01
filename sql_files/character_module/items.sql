@@ -17,12 +17,13 @@
 -- Item table
 CREATE TABLE item(
   item_id INTEGER,
+  item_name TEXT,
   subinventory_id INTEGER,
   inventory_id INTEGER,
   character_id INTEGER,
   PRIMARY KEY (subinventory_id, item_id, inventory_id, character_id),
-  FOREIGN KEY (subinventory_id) REFERENCES sub_inventory(subinventory_id)
-  FOREIGN KEY (character_id) REFERENCES character(character_id)
+  FOREIGN KEY (subinventory_id) REFERENCES sub_inventory(subinventory_id),
+  FOREIGN KEY (character_id) REFERENCES characters(character_id),
   FOREIGN KEY (inventory_id) REFERENCES inventory(inventory_id)
 );
 

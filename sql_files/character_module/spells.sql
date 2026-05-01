@@ -13,7 +13,7 @@ CREATE TABLE spells(
   spell_level INTEGER NOT NULL,
   spell_school TEXT NOT NULL,
   cast_time TEXT NOT NULL,
-  range INTEGER NOT NULL,
+  range_ INTEGER NOT NULL,
   components TEXT,
   duration TEXT
 );

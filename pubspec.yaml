@@ -58,6 +58,7 @@ flutter:
     - sql_files/character_module/
     - sql_files/character_module/class_files/
     - sql_files/creature_module/
+    - sql_files/initial_data/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

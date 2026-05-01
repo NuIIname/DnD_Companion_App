@@ -10,11 +10,11 @@
 CREATE TABLE creature(
   creature_id INTEGER PRIMARY KEY,
   creature_name TEXT NOT NULL,
-  creature_armor_class TEXT CHECK(creature_armor_class >= 0),
+  creature_armor_class INTEGER CHECK(creature_armor_class >= 0),
   str INTEGER CHECK(str >= 0 AND str <= 30),
   dex INTEGER CHECK(dex >= 0 AND dex <= 30),
   con INTEGER CHECK(con >= 0 AND con <= 30),
-  int INTEGER CHECK(int >= 0 AND int <= 30),
+  inte INTEGER CHECK(inte >= 0 AND inte <= 30),
   wis INTEGER CHECK(wis >= 0 AND wis <= 30),
   cha INTEGER CHECK(cha >= 0 AND cha <= 30),
   cr INTEGER CHECK(str >= 0 AND str <= 30),
@@ -22,7 +22,7 @@ CREATE TABLE creature(
   creature_conditions TEXT,
   creature_hit_die INTEGER,
   creature_static_hp INTEGER,
-  creature_size INTEGER NOT NULL,
+  creature_size TEXT NOT NULL,
   alignment TEXT
 );
 
