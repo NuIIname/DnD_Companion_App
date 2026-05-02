@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dnd_companion_app/helper_classes/database_helper.dart';
 import 'package:dnd_companion_app/data_models/spells_model.dart';
+import 'package:flutter/material.dart';
 
 class SpellsHelper {
   // ================================================================================
@@ -21,26 +22,40 @@ class SpellsHelper {
   ================================================================================
   */
   Future<int> addNew(Spells spell) async {
-    final db = await DatabaseHelper.instance.database;
+    try {
+      final db = await DatabaseHelper.instance.database;
 
-    // The '?' in VALUES are placeholders, they get replaced when the function is called and the user enters the info
-    return await db.rawInsert(
-      '''
-    INSERT INTO spells(ritual, spell_name, spell_desc, spell_level, spell_school, cast_time, range_, components, duration)
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''',
-      [
-        spell.ritual,
-        spell.spellName,
-        spell.spellDesc,
-        spell.spellLevel,
-        spell.spellSchool,
-        spell.castTime,
-        spell.range_,
-        spell.components,
-        spell.duration,
-      ],
-    );
+      if (spell.spellName == null ||
+          spell.spellDesc == null ||
+          spell.spellLevel == null ||
+          spell.spellSchool == null ||
+          spell.castTime == null ||
+          spell.range_ == null) {
+        throw ArgumentError('Spell information cant be null!');
+      }
+
+      // The '?' in VALUES are placeholders, they get replaced when the function is called and the user enters the info
+      return await db.rawInsert(
+        '''
+      INSERT INTO spells(ritual, spell_name, spell_desc, spell_level, spell_school, cast_time, range_, components, duration)
+      VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ''',
+        [
+          spell.ritual,
+          spell.spellName,
+          spell.spellDesc,
+          spell.spellLevel,
+          spell.spellSchool,
+          spell.castTime,
+          spell.range_,
+          spell.components,
+          spell.duration,
+        ],
+      );
+    } catch (e) {
+      debugPrint('Error adding new spell');
+      return 0;
+    }
   }
 
   Future<List<Map<String, dynamic>>> getAll() async {
@@ -63,36 +78,50 @@ class SpellsHelper {
   }
 
   Future<int> updateInfo(Spells spell, int spellID) async {
-    final db = await DatabaseHelper.instance.database;
+    try {
+      final db = await DatabaseHelper.instance.database;
 
-    return await db.rawUpdate(
-      '''
-    UPDATE spells
-    SET
-      ritual = ?, 
-      spell_name = ?, 
-      spell_desc = ?, 
-      spell_level = ?, 
-      spell_school = ?, 
-      cast_time = ?, 
-      range_ = ?, 
-      components = ?, 
-      duration = ?
-    WHERE spell_id = ?
-    ''',
-      [
-        spell.ritual,
-        spell.spellName,
-        spell.spellDesc,
-        spell.spellLevel,
-        spell.spellSchool,
-        spell.castTime,
-        spell.range_,
-        spell.components,
-        spell.duration,
-        spellID,
-      ],
-    );
+      if (spell.spellName == null ||
+          spell.spellDesc == null ||
+          spell.spellLevel == null ||
+          spell.spellSchool == null ||
+          spell.castTime == null ||
+          spell.range_ == null) {
+        throw ArgumentError('Spell information cant be null!');
+      }
+
+      return await db.rawUpdate(
+        '''
+      UPDATE spells
+      SET
+        ritual = ?, 
+        spell_name = ?, 
+        spell_desc = ?, 
+        spell_level = ?, 
+        spell_school = ?, 
+        cast_time = ?, 
+        range_ = ?, 
+        components = ?, 
+        duration = ?
+      WHERE spell_id = ?
+      ''',
+        [
+          spell.ritual,
+          spell.spellName,
+          spell.spellDesc,
+          spell.spellLevel,
+          spell.spellSchool,
+          spell.castTime,
+          spell.range_,
+          spell.components,
+          spell.duration,
+          spellID,
+        ],
+      );
+    } catch (e) {
+      debugPrint('Error updating spell');
+      return 0;
+    }
   }
 
   Future<List<Map<String, dynamic>>> select(int spellID) async {
@@ -110,20 +139,29 @@ class SpellsHelper {
   }
 
   Future<List<Map<String, dynamic>>> search(String name) async {
-    final db = await DatabaseHelper.instance.database;
+    try {
+      final db = await DatabaseHelper.instance.database;
 
-    return await db.rawQuery(
-      '''
+      if (name.isEmpty) {
+        throw ArgumentError('Name cant be empty!');
+      }
 
-      SELECT *
-      FROM spells
-      WHERE spell_name = ?
+      return await db.rawQuery(
+        '''
+
+        SELECT *
+        FROM spells
+        WHERE spell_name = ?
 
 
 
-    ''',
+      ''',
 
-      [name],
-    );
+        [name],
+      );
+    } catch (e) {
+      debugPrint('Error searching for spell');
+      return [];
+    }
   }
 }

@@ -10,10 +10,10 @@ class PersonalInfoHelper {
 
     return await db.rawInsert(
       '''
-    INSERT INTO personal_info(ideals, bonds, flaws, about)
-    VALUES(?, ?, ?, ?)
+      INSERT INTO personal_info(ideals, bonds, flaws, about)
+      VALUES(?, ?, ?, ?)
 
-    ''',
+      ''',
       [
         personalInfo.ideals,
         personalInfo.bonds,

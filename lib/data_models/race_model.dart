@@ -1,6 +1,6 @@
 class Race {
   final int? raceId;
-  final int creatureSize;
+  final String? creatureSize;
   final int str;
   final int dex;
   final int con;
@@ -8,7 +8,7 @@ class Race {
   final int wis;
   final int cha;
   final int naturalArmor;
-  final String raceName;
+  final String? raceName;
 
   Race({
     this.raceId,

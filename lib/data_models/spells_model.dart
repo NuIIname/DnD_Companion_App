@@ -1,12 +1,12 @@
 class Spells {
   final int? spellId;
   final String ritual;
-  final String spellName;
-  final String spellDesc;
-  final int spellLevel;
-  final String spellSchool;
-  final String castTime;
-  final int range_;
+  final String? spellName;
+  final String? spellDesc;
+  final int? spellLevel;
+  final String? spellSchool;
+  final String? castTime;
+  final int? range_;
   final String components;
   final String duration;
 

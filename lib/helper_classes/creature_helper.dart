@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:dnd_companion_app/helper_classes/database_helper.dart';
+import 'package:flutter/material.dart';
 
 class CreatureHelper {
   // ================================================================================
@@ -40,17 +41,32 @@ class CreatureHelper {
   }
 
   Future<List<Map<String, dynamic>>> search(String name) async {
-    final db = await DatabaseHelper.instance.database;
+    try {
+      final db = await DatabaseHelper.instance.database;
 
-    return await db.rawQuery(
-      '''
+      if (name != 'Grimlock' ||
+          name != 'Cloaker' ||
+          name != 'Wolf' ||
+          name != 'Deva' ||
+          name != 'Adult Blue Dragon' ||
+          name != 'Vulture' ||
+          name != 'Stone Golem') {
+        throw ArgumentError('Creature name does not exist!');
+      }
 
-      SELECT *
-      FROM creature
-      WHERE creature_name = ?
-    ''',
+      return await db.rawQuery(
+        '''
 
-      [name],
-    );
+        SELECT *
+        FROM creature
+        WHERE creature_name = ?
+      ''',
+
+        [name],
+      );
+    } catch (e) {
+      debugPrint('Error searching for creature');
+      return [];
+    }
   }
 }

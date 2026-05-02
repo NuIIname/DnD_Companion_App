@@ -81,9 +81,9 @@ class CharacterHelper {
     final db = await DatabaseHelper.instance.database;
     return await db.rawDelete(
       '''
-      DELETE FROM characters 
-      WHERE character_id = ?
-      ''',
+        DELETE FROM characters 
+        WHERE character_id = ?
+        ''',
       [characterID],
     );
   }
@@ -159,7 +159,7 @@ class CharacterHelper {
     try {
       final db = await DatabaseHelper.instance.database;
 
-      if (name == '') {
+      if (name.isEmpty) {
         throw ArgumentError('Name cant be empty!');
       }
 
@@ -240,62 +240,100 @@ class CharacterHelper {
   }
 
   Future<int> setCharacterClass(int characterID, String className) async {
-    final db = await DatabaseHelper.instance.database;
+    try {
+      final db = await DatabaseHelper.instance.database;
 
-    final selectedClass = await db.rawQuery(
-      '''
+      if (className != 'Wizard' ||
+          className != 'Barbarian' ||
+          className != 'Bard' ||
+          className != 'Cleric' ||
+          className != 'Druid' ||
+          className != 'Fighter' ||
+          className != 'Monk' ||
+          className != 'Paladin' ||
+          className != 'Ranger' ||
+          className != 'Rogue' ||
+          className != 'Sorcerer' ||
+          className != 'Warlock') {
+        throw ArgumentError('Class name does not exist!');
+      }
 
-    SELECT class_id
-    FROM class
-    WHERE class.class_name = ? 
-  ''',
+      final selectedClass = await db.rawQuery(
+        '''
 
-      [className],
-    );
+        SELECT class_id
+        FROM class
+        WHERE class.class_name = ? 
+      ''',
 
-    final int selectedClassId =
-        selectedClass.first['class_id']
-            as int; // Since its a map, we use the key 'class_id' to get the value
+        [className],
+      );
 
-    return await db.rawInsert(
-      '''
+      final int selectedClassId =
+          selectedClass.first['class_id']
+              as int; // Since its a map, we use the key 'class_id' to get the value
 
-      INSERT INTO has_class(character_id, class_id)
-      VALUES (?, ?)
-    ''',
+      return await db.rawInsert(
+        '''
 
-      [characterID, selectedClassId],
-    );
+          INSERT INTO has_class(character_id, class_id)
+          VALUES (?, ?)
+        ''',
+
+        [characterID, selectedClassId],
+      );
+    } catch (e) {
+      debugPrint('Error setting characte class');
+      return 0;
+    }
   }
 
   Future<int> setCharacterRace(int characterID, String raceName) async {
-    final db = await DatabaseHelper.instance.database;
+    try {
+      final db = await DatabaseHelper.instance.database;
 
-    final selectedRace = await db.rawQuery(
-      '''
+      if (raceName != 'Aasimar' ||
+          raceName != 'Dragonborn' ||
+          raceName != 'Dwarf' ||
+          raceName != 'Elf' ||
+          raceName != 'Gnome' ||
+          raceName != 'Goliath' ||
+          raceName != 'Halfling' ||
+          raceName != 'Human' ||
+          raceName != 'Orc' ||
+          raceName != 'Tiefling') {
+        throw ArgumentError('Race name does not exist!');
+      }
 
-      SELECT race_id
-      FROM race
-      WHERE race.race_name = ? 
-    ''',
+      final selectedRace = await db.rawQuery(
+        '''
 
-      [raceName],
-    );
+            SELECT race_id
+            FROM race
+            WHERE race.race_name = ? 
+          ''',
 
-    final int selectedRaceId =
-        selectedRace.first['race_id']
-            as int; // Since its a map, we use the key 'class_id' to get the value
+        [raceName],
+      );
 
-    return await db.rawUpdate(
-      '''
+      final int selectedRaceId =
+          selectedRace.first['race_id']
+              as int; // Since its a map, we use the key 'class_id' to get the value
 
-        UPDATE characters
-        SET race_id = ?
-        WHERE character_id = ?
-      ''',
+      return await db.rawUpdate(
+        '''
 
-      [selectedRaceId, characterID],
-    );
+              UPDATE characters
+              SET race_id = ?
+              WHERE character_id = ?
+            ''',
+
+        [selectedRaceId, characterID],
+      );
+    } catch (e) {
+      debugPrint('Error setting character race');
+      return 0;
+    }
   }
 
   /*
