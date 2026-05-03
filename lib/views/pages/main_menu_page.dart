@@ -1,6 +1,7 @@
 import 'package:dnd_companion_app/data/notifiers.dart';
 import 'package:flutter/material.dart';
 import 'package:dnd_companion_app/views/widgets/menu_button.dart';
+import 'package:dnd_companion_app/views/pages/character_list_page.dart';
 
 class MainMenuPage extends StatelessWidget {
   const MainMenuPage({super.key});
@@ -29,16 +30,28 @@ class MainMenuPage extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border.all(color: Theme.of(context).colorScheme.outline),
           ),
-          child: const Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              MenuButton(title: "Characters"),
-              MenuButton(title: "Creatures"),
-              MenuButton(title: "Classes"),
-              MenuButton(title: "Feats"),
-              MenuButton(title: "Backgrounds"),
-              MenuButton(title: "Spells"),
-              MenuButton(title: "Items"),
+              MenuButton(
+                title: "Characters",
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return CharacterListPage();
+                      },
+                    ),
+                  );
+                },
+              ),
+              const MenuButton(title: "Creatures"),
+              const MenuButton(title: "Classes"),
+              const MenuButton(title: "Feats"),
+              const MenuButton(title: "Backgrounds"),
+              const MenuButton(title: "Spells"),
+              const MenuButton(title: "Items"),
             ],
           ),
         ),
