@@ -9,8 +9,10 @@ class MenuButton extends StatelessWidget {
     return Container(
       height: 70,
       width: double.infinity,
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.black)),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Theme.of(context).colorScheme.outline),
+        ),
       ),
       child: Center(child: Text(title, style: TextStyle(fontSize: 28))),
     );
