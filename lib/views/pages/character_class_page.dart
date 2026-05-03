@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:dnd_companion_app/views/pages/character_race_background_page.dart';
 
 class CharacterClassPage extends StatefulWidget {
-  const CharacterClassPage({super.key});
+  final bool intelligencePointsEnabled;
+
+  const CharacterClassPage({
+    super.key,
+    required this.intelligencePointsEnabled,
+  });
 
   @override
   State<CharacterClassPage> createState() => _CharacterClassPageState();
@@ -174,7 +179,10 @@ class _CharacterClassPageState extends State<CharacterClassPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return const CharacterRaceBackgroundPage();
+                    return CharacterRaceBackgroundPage(
+                      intelligencePointsEnabled:
+                          widget.intelligencePointsEnabled,
+                    );
                   },
                 ),
               );

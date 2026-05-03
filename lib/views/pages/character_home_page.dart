@@ -28,12 +28,14 @@ class _CharacterHomePageState extends State<CharacterHomePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return const CharacterClassPage();
+                    return CharacterClassPage(
+                      intelligencePointsEnabled: intelligencePoints,
+                    );
                   },
                 ),
               );
             },
-            icon: Icon(Icons.arrow_forward),
+            icon: const Icon(Icons.arrow_forward),
           ),
         ],
       ),

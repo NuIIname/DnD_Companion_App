@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:dnd_companion_app/views/pages/character_abilities_page.dart';
 
 class CharacterRaceBackgroundPage extends StatefulWidget {
-  const CharacterRaceBackgroundPage({super.key});
+  final bool intelligencePointsEnabled;
+
+  const CharacterRaceBackgroundPage({
+    super.key,
+    required this.intelligencePointsEnabled,
+  });
 
   @override
   State<CharacterRaceBackgroundPage> createState() =>
@@ -116,7 +122,17 @@ class _CharacterRaceBackgroundPageState
         actions: [
           IconButton(
             onPressed: () {
-              print("Go to Abilities page");
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return CharacterAbilitiesPage(
+                      intelligencePointsEnabled:
+                          widget.intelligencePointsEnabled,
+                    );
+                  },
+                ),
+              );
             },
             icon: const Icon(Icons.arrow_forward),
           ),
