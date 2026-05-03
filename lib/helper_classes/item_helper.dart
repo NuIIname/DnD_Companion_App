@@ -18,6 +18,20 @@ class CharacterHelper {
   ================================================================================
   */
 
+  Future<int> addToInventory(int itemID, int inventoryID) async {
+    final db = await DatabaseHelper.instance.database;
+
+    return await db.rawUpdate(
+      '''
+    UPDATE item
+    SET
+      inventory_id = ?
+    WHERE item_id = ? 
+    ''',
+      [inventoryID, itemID],
+    );
+  }
+
   Future<List<Map<String, dynamic>>> getAll() async {
     final db = await DatabaseHelper.instance.database;
     return await db.rawQuery('''

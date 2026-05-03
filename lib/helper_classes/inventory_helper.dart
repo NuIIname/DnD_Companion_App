@@ -14,12 +14,13 @@ class InventoryHelper {
   ================================================================================
     Inventory Functions:
     - addNew() - Add a new inventory
-    - getAll() - See all Inventorys
+    - getAll() - See all Inventories
     - delete() - Remove a Inventory
     - updateInfo() - Change data stored in an inventory
     - select() - Retrieve all information about one inventory
   ================================================================================
   */
+
   Future<int> addNew(Inventory inventory, int characterID) async {
     try {
       final db = await DatabaseHelper.instance.database;

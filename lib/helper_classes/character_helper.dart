@@ -398,9 +398,8 @@ class CharacterHelper {
 
     return await db.rawQuery(
       '''
-
-    SELECT inventory.copper, inventory.silver, inventory.electrum, inventory.gold, inventory.platinum
-    FROM (characters INNER JOIN inventory ON inventory.character_id = characters.character_id)
+    SELECT inventory.copper, inventory.silver, inventory.electrum, inventory.gold, inventory.platinum, item.item_name
+    FROM (characters INNER JOIN inventory ON inventory.character_id = characters.character_id) INNER JOIN item ON item.inventory_id = inventory.inventory_id
     WHERE characters.character_id = ?
     ''',
       [characterID],
