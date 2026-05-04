@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:dnd_companion_app/views/pages/character_abilities_page.dart';
+import 'package:dnd_companion_app/data_models/character_draft.dart';
 
 class CharacterRaceBackgroundPage extends StatefulWidget {
-  final bool intelligencePointsEnabled;
+  final CharacterDraft draft;
 
-  const CharacterRaceBackgroundPage({
-    super.key,
-    required this.intelligencePointsEnabled,
-  });
+  const CharacterRaceBackgroundPage({super.key, required this.draft});
 
   @override
   State<CharacterRaceBackgroundPage> createState() =>
@@ -53,6 +51,34 @@ class _CharacterRaceBackgroundPageState
     "Neutral Evil",
     "Chaotic Evil",
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    selectedRace = widget.draft.race.isEmpty ? null : widget.draft.race;
+    selectedBackground = widget.draft.background.isEmpty
+        ? null
+        : widget.draft.background;
+    selectedAlignment = widget.draft.alignment.isEmpty
+        ? null
+        : widget.draft.alignment;
+  }
+
+  void saveDraftAndGoNext() {
+    widget.draft.race = selectedRace ?? "";
+    widget.draft.background = selectedBackground ?? "";
+    widget.draft.alignment = selectedAlignment ?? "True Neutral";
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return CharacterAbilitiesPage(draft: widget.draft);
+        },
+      ),
+    );
+  }
 
   void showRaceDetails() {
     showDialog(
@@ -121,19 +147,7 @@ class _CharacterRaceBackgroundPageState
         title: const Text("Race & Background"),
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return CharacterAbilitiesPage(
-                      intelligencePointsEnabled:
-                          widget.intelligencePointsEnabled,
-                    );
-                  },
-                ),
-              );
-            },
+            onPressed: saveDraftAndGoNext,
             icon: const Icon(Icons.arrow_forward),
           ),
         ],

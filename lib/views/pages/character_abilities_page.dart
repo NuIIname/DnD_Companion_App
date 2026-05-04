@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:dnd_companion_app/views/pages/character_equipment_page.dart';
+import 'package:dnd_companion_app/data_models/character_draft.dart';
 
 class CharacterAbilitiesPage extends StatefulWidget {
-  final bool intelligencePointsEnabled;
+  final CharacterDraft draft;
 
-  const CharacterAbilitiesPage({
-    super.key,
-    required this.intelligencePointsEnabled,
-  });
+  const CharacterAbilitiesPage({super.key, required this.draft});
 
   @override
   State<CharacterAbilitiesPage> createState() => _CharacterAbilitiesPageState();
@@ -106,6 +104,39 @@ class _CharacterAbilitiesPageState extends State<CharacterAbilitiesPage> {
     intValue = null;
     wisValue = null;
     chrValue = null;
+  }
+
+  void saveAbilityScoresToDraft() {
+    if (abilityMethod == "Manual") {
+      widget.draft.strength = strController.text;
+      widget.draft.dexterity = dexController.text;
+      widget.draft.constitution = conController.text;
+      widget.draft.intelligence = intController.text;
+      widget.draft.wisdom = wisController.text;
+      widget.draft.charisma = chrController.text;
+    }
+
+    if (abilityMethod == "Standard Array") {
+      widget.draft.strength = strValue?.toString() ?? "";
+      widget.draft.dexterity = dexValue?.toString() ?? "";
+      widget.draft.constitution = conValue?.toString() ?? "";
+      widget.draft.intelligence = intValue?.toString() ?? "";
+      widget.draft.wisdom = wisValue?.toString() ?? "";
+      widget.draft.charisma = chrValue?.toString() ?? "";
+    }
+  }
+
+  void goToEquipmentPage() {
+    saveAbilityScoresToDraft();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return CharacterEquipmentPage(draft: widget.draft);
+        },
+      ),
+    );
   }
 
   Widget manualAbilityField(String label, TextEditingController controller) {
@@ -313,7 +344,7 @@ class _CharacterAbilitiesPageState extends State<CharacterAbilitiesPage> {
           ),
         ),
 
-        if (widget.intelligencePointsEnabled) ...[
+        if (widget.draft.intelligencePoints) ...[
           const Divider(height: 40),
 
           const Text(
@@ -381,17 +412,6 @@ class _CharacterAbilitiesPageState extends State<CharacterAbilitiesPage> {
           ),
         ],
       ],
-    );
-  }
-
-  void goToEquipmentPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return const CharacterEquipmentPage();
-        },
-      ),
     );
   }
 

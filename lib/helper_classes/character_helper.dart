@@ -48,7 +48,6 @@ class CharacterHelper {
         );
       }
 
-      // The '?' in VALUES are placeholders, they get replaced when the function is called and the user enters the info
       return await db.rawInsert(
         '''
         INSERT INTO characters(character_name, conditions, xp, resurrection_dc, alignment, death_saves)
@@ -71,19 +70,35 @@ class CharacterHelper {
 
   Future<List<Map<String, dynamic>>> getAll() async {
     final db = await DatabaseHelper.instance.database;
+
     return await db.rawQuery('''
-    SELECT * 
+    SELECT 
+      characters.character_id,
+      characters.character_name,
+      characters.xp,
+      characters.alignment,
+      has_class.level,
+      class.class_name,
+      race.race_name
     FROM characters
-    ''');
+    LEFT JOIN has_class 
+      ON characters.character_id = has_class.character_id
+    LEFT JOIN class 
+      ON has_class.class_id = class.class_id
+    LEFT JOIN race
+      ON characters.race_id = race.race_id
+    ORDER BY characters.character_id DESC
+  ''');
   }
 
   Future<int> delete(int characterID) async {
     final db = await DatabaseHelper.instance.database;
+
     return await db.rawDelete(
       '''
-        DELETE FROM characters 
-        WHERE character_id = ?
-        ''',
+    DELETE FROM characters
+    WHERE character_id = ?
+    ''',
       [characterID],
     );
   }
@@ -137,7 +152,7 @@ class CharacterHelper {
     FROM characters INNER JOIN race ON characters.rID = race.race_id
     WHERE characters.character_name = ?
   ''',
-      [characterID], // This goes into the '?'
+      [characterID],
     );
   }
 
@@ -150,7 +165,6 @@ class CharacterHelper {
       FROM ((characters INNER JOIN race ON characters.race_id = race.race_id) INNER JOIN has_class ON has_class.character_id = character.character_id) INNER JOIN class ON class.class_id = has_class.class_id) INNER JOIN personal_info ON personal_info.background_id = background.background_id)
       WHERE character_id = ?
     ''',
-
       [characterID],
     );
   }
@@ -169,7 +183,6 @@ class CharacterHelper {
         FROM characters
         WHERE character_name = ?
       ''',
-
         [name],
       );
     } catch (e) {
@@ -195,7 +208,6 @@ class CharacterHelper {
       FROM characters INNER JOIN inventory ON characters.character_id = inventory.character_id INNER JOIN item ON (characters.character_id = item.character_id AND item.inventory_id = inventory.inventory_id) INNER JOIN armor ON armor.item_id = item.item_id INNER JOIN race ON race.race_id = characters.rID
       WHERE characters.character_id = ?
     ''',
-
       [characterID],
     );
   }
@@ -203,7 +215,7 @@ class CharacterHelper {
   /*
   ================================================================================
     Setter Functions:
-    - setCharacterBackground() - Attach a background and personal info to a character (Note: The background and personal info must already exist, which is created with the BackgroundHelper and PersonalInfoHelper singleton)
+    - setCharacterBackground() - Attach a background and personal info to a character
     - setCharacterClass() - Attach a preloaded class to the character
     - setCharacterRace() - Attach a preloaded race to the character
   ================================================================================
@@ -218,72 +230,59 @@ class CharacterHelper {
 
     await db.rawUpdate(
       '''
-
     UPDATE personal_info
     SET background_id = ?
     WHERE personal_info.personal_info_id = ?
-  ''',
-
+    ''',
       [backgroundID, personalInfoID],
     );
 
     return await db.rawUpdate(
       '''
-
     UPDATE characters
     SET background_id = ?
     WHERE character_id = ?
     ''',
-
       [backgroundID, characterID],
     );
   }
 
-  Future<int> setCharacterClass(int characterID, String className) async {
+  Future<int> setCharacterClass(
+    int characterID,
+    String className,
+    int level,
+  ) async {
     try {
       final db = await DatabaseHelper.instance.database;
 
-      if (className != 'Wizard' ||
-          className != 'Barbarian' ||
-          className != 'Bard' ||
-          className != 'Cleric' ||
-          className != 'Druid' ||
-          className != 'Fighter' ||
-          className != 'Monk' ||
-          className != 'Paladin' ||
-          className != 'Ranger' ||
-          className != 'Rogue' ||
-          className != 'Sorcerer' ||
-          className != 'Warlock') {
-        throw ArgumentError('Class name does not exist!');
+      if (level < 1 || level > 20) {
+        throw ArgumentError('Level must be between 1 and 20.');
       }
 
       final selectedClass = await db.rawQuery(
         '''
-
         SELECT class_id
         FROM class
-        WHERE class.class_name = ? 
-      ''',
-
+        WHERE class_name = ?
+        ''',
         [className],
       );
 
-      final int selectedClassId =
-          selectedClass.first['class_id']
-              as int; // Since its a map, we use the key 'class_id' to get the value
+      if (selectedClass.isEmpty) {
+        throw ArgumentError('Class name does not exist: $className');
+      }
+
+      final int selectedClassId = selectedClass.first['class_id'] as int;
 
       return await db.rawInsert(
         '''
-
-          INSERT INTO has_class(character_id, class_id)
-          VALUES (?, ?)
+        INSERT INTO has_class(character_id, class_id, level)
+        VALUES (?, ?, ?)
         ''',
-
-        [characterID, selectedClassId],
+        [characterID, selectedClassId, level],
       );
     } catch (e) {
-      debugPrint('Error setting characte class');
+      debugPrint('Error setting character class: $e');
       return 0;
     }
   }
@@ -292,46 +291,31 @@ class CharacterHelper {
     try {
       final db = await DatabaseHelper.instance.database;
 
-      if (raceName != 'Aasimar' ||
-          raceName != 'Dragonborn' ||
-          raceName != 'Dwarf' ||
-          raceName != 'Elf' ||
-          raceName != 'Gnome' ||
-          raceName != 'Goliath' ||
-          raceName != 'Halfling' ||
-          raceName != 'Human' ||
-          raceName != 'Orc' ||
-          raceName != 'Tiefling') {
-        throw ArgumentError('Race name does not exist!');
-      }
-
       final selectedRace = await db.rawQuery(
         '''
-
-            SELECT race_id
-            FROM race
-            WHERE race.race_name = ? 
-          ''',
-
+      SELECT race_id
+      FROM race
+      WHERE race_name = ?
+      ''',
         [raceName],
       );
 
-      final int selectedRaceId =
-          selectedRace.first['race_id']
-              as int; // Since its a map, we use the key 'class_id' to get the value
+      if (selectedRace.isEmpty) {
+        throw ArgumentError('Race name does not exist: $raceName');
+      }
+
+      final int selectedRaceId = selectedRace.first['race_id'] as int;
 
       return await db.rawUpdate(
         '''
-
-              UPDATE characters
-              SET race_id = ?
-              WHERE character_id = ?
-            ''',
-
+      UPDATE characters
+      SET race_id = ?
+      WHERE character_id = ?
+      ''',
         [selectedRaceId, characterID],
       );
     } catch (e) {
-      debugPrint('Error setting character race');
+      debugPrint('Error setting character race: $e');
       return 0;
     }
   }
@@ -357,7 +341,6 @@ class CharacterHelper {
     FROM ((background INNER JOIN characters ON background.background_id = characters.character_id) INNER JOIN personal_info ON personal_info.background_id = background.background_id)
     WHERE characters.character_id = ?
     ''',
-
       [characterID],
     );
   }
@@ -428,7 +411,6 @@ class CharacterHelper {
       FROM characters INNER JOIN race ON characters.race_id = race.race_id
       WHERE characers.character_id = ?
       ''',
-
       [characterID],
     );
   }
@@ -454,7 +436,6 @@ class CharacterHelper {
     FROM characters INNER JOIN inventory ON characters.character_id = inventory.character_id
     WHERE characters.character_id = ?
     ''',
-
       [characterID],
     );
   }

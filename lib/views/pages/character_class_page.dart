@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:dnd_companion_app/views/pages/character_race_background_page.dart';
+import 'package:dnd_companion_app/data_models/character_draft.dart';
 
 class CharacterClassPage extends StatefulWidget {
-  final bool intelligencePointsEnabled;
+  final CharacterDraft draft;
 
-  const CharacterClassPage({
-    super.key,
-    required this.intelligencePointsEnabled,
-  });
+  const CharacterClassPage({super.key, required this.draft});
 
   @override
   State<CharacterClassPage> createState() => _CharacterClassPageState();
@@ -119,9 +117,39 @@ class _CharacterClassPageState extends State<CharacterClassPage> {
   };
 
   @override
+  void initState() {
+    super.initState();
+
+    nameController.text = widget.draft.name;
+    selectedClass = widget.draft.characterClass.isEmpty
+        ? null
+        : widget.draft.characterClass;
+    selectedSubclass = widget.draft.subclass.isEmpty
+        ? null
+        : widget.draft.subclass;
+    selectedLevel = widget.draft.level.isEmpty ? null : widget.draft.level;
+  }
+
+  @override
   void dispose() {
     nameController.dispose();
     super.dispose();
+  }
+
+  void saveDraftAndGoNext() {
+    widget.draft.name = nameController.text.trim();
+    widget.draft.characterClass = selectedClass ?? "";
+    widget.draft.subclass = selectedSubclass ?? "";
+    widget.draft.level = selectedLevel ?? "1";
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return CharacterRaceBackgroundPage(draft: widget.draft);
+        },
+      ),
+    );
   }
 
   void showClassFeatures() {
@@ -174,19 +202,7 @@ class _CharacterClassPageState extends State<CharacterClassPage> {
         title: const Text("Character Class"),
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return CharacterRaceBackgroundPage(
-                      intelligencePointsEnabled:
-                          widget.intelligencePointsEnabled,
-                    );
-                  },
-                ),
-              );
-            },
+            onPressed: saveDraftAndGoNext,
             icon: const Icon(Icons.arrow_forward),
           ),
         ],
@@ -353,7 +369,7 @@ class _CharacterClassPageState extends State<CharacterClassPage> {
                   title: const Text("Add another class"),
                   subtitle: const Text("Multiclass placeholder"),
                   onTap: () {
-                    print("Add another class");
+                    // Multiclass placeholder.
                   },
                 ),
               ),

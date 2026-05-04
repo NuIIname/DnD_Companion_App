@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dnd_companion_app/views/pages/character_class_page.dart';
+import 'package:dnd_companion_app/data_models/character_draft.dart';
 
 class CharacterHomePage extends StatefulWidget {
   const CharacterHomePage({super.key});
@@ -16,6 +17,23 @@ class _CharacterHomePageState extends State<CharacterHomePage> {
   bool encumbrance = false;
   bool homebrewRules = false;
 
+  void goToClassPage() {
+    final draft = CharacterDraft(
+      intelligencePoints: intelligencePoints,
+      encumbrance: encumbrance,
+      homebrewRules: homebrewRules,
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return CharacterClassPage(draft: draft);
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,18 +41,7 @@ class _CharacterHomePageState extends State<CharacterHomePage> {
         title: const Text("Character Rules"),
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return CharacterClassPage(
-                      intelligencePointsEnabled: intelligencePoints,
-                    );
-                  },
-                ),
-              );
-            },
+            onPressed: goToClassPage,
             icon: const Icon(Icons.arrow_forward),
           ),
         ],
@@ -146,7 +153,7 @@ class _CharacterHomePageState extends State<CharacterHomePage> {
                 padding: const EdgeInsets.all(30.0),
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    print("Create tag");
+                    // Placeholder for tag creation later.
                   },
                   icon: const Icon(Icons.add),
                   label: const Text("Create Tag"),
@@ -162,7 +169,7 @@ class _CharacterHomePageState extends State<CharacterHomePage> {
                     value: "Rain King",
                     child: Text("Rain King"),
                   ),
-                  DropdownMenuItem(value: "Trinty", child: Text("Trinity")),
+                  DropdownMenuItem(value: "Trinity", child: Text("Trinity")),
                 ],
                 onChanged: (value) {},
               ),
