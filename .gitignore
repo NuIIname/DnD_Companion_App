@@ -1,3 +1,8 @@
+# Cocoapods setup files
+ios/Pods/
+macos/Pods/
+
+
 # Miscellaneous
 *.class
 *.log
