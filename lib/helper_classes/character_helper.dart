@@ -156,16 +156,16 @@ class CharacterHelper {
     );
   }
 
-  Future<List<Map<String, dynamic>>> select(int characterID) async {
+  Future<List<Map<String, dynamic>>> select(String characterName) async {
     final db = await DatabaseHelper.instance.database;
 
     return await db.rawQuery(
       '''
       SELECT *
       FROM ((characters INNER JOIN race ON characters.race_id = race.race_id) INNER JOIN has_class ON has_class.character_id = character.character_id) INNER JOIN class ON class.class_id = has_class.class_id) INNER JOIN personal_info ON personal_info.background_id = background.background_id)
-      WHERE character_id = ?
+      WHERE characterName = ?
     ''',
-      [characterID],
+      [characterName],
     );
   }
 
@@ -409,42 +409,35 @@ class CharacterHelper {
       '''
       SELECT MAX(6, race.con)
       FROM characters INNER JOIN race ON characters.race_id = race.race_id
-      WHERE characers.character_id = ?
+      WHERE characters.character_id = ?
       ''',
       [characterID],
     );
   }
 
-  Future<List<Map<String, dynamic>>> minCharacterXP(int characterID) async {
+  Future<List<Map<String, dynamic>>> minCharacterXP() async {
     final db = await DatabaseHelper.instance.database;
 
-    return await db.rawQuery(
-      '''
-      SELECT MIN(xp)
+    return await db.rawQuery('''
+      SELECT character_name, MIN(xp)
       FROM characters
-    ''',
-      [characterID],
-    );
+    ''');
   }
 
-  Future<List<Map<String, dynamic>>> totalCoinCount(int characterID) async {
+  Future<List<Map<String, dynamic>>> totalGoldCount() async {
     final db = await DatabaseHelper.instance.database;
 
-    return await db.rawQuery(
-      '''
-    SELECT SUM(inventory.copper, inventory.silver, inventory.platinum, invntory.gold, inventory.electrum)
+    return await db.rawQuery('''
+    SELECT SUM(inventory.gold)
     FROM characters INNER JOIN inventory ON characters.character_id = inventory.character_id
-    WHERE characters.character_id = ?
-    ''',
-      [characterID],
-    );
+    ''');
   }
 
   Future<List<Map<String, dynamic>>> averageSpellCastTime() async {
     final db = await DatabaseHelper.instance.database;
 
     return await db.rawQuery('''
-    SELECT AVERAGE(spell.cast_time)
+    SELECT AVG(spells.cast_time)
     FROM spells
     ''');
   }

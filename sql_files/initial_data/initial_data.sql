@@ -1,5 +1,4 @@
 
-
 -- race
 INSERT INTO race(creature_size, str, dex, con, inte, wis, cha, natural_armor, race_name)
 VALUES ('Small', 11, 6, 3, 9, 1, 3, 10, 'Aasimar');
