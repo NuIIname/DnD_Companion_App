@@ -129,13 +129,6 @@ class DatabaseHelper {
     await _executeSQLFile(db, creatureActions);
 
     // ===================================================
-
-    // Loads the initial data into the database
-    final startingData = await rootBundle.loadString(
-      'sql_files/initial_data/initial_data.sql',
-    );
-
-    await _executeSQLFile(db, startingData);
   }
 
   // Takes SQL statements and breaks them down tuple by tuple so that they can be executed in dart. This essentially serves as the translator between SQl and Dart code
